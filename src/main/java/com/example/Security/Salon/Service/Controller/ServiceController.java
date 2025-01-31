@@ -23,7 +23,7 @@ public class ServiceController {
     @Autowired
     private ServiceService serviceService;
 
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('SALON_ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<?> createService(@Validated @RequestBody CreateServiceDto dto) {
         try {
@@ -45,7 +45,7 @@ public class ServiceController {
         }
     }
 
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('SALON_ADMIN')")
     @GetMapping("/salon/{salonId}")
     public ResponseEntity<?> getServicesForSalon(@PathVariable UUID salonId) {
         try {
@@ -65,7 +65,7 @@ public class ServiceController {
         }
     }
 
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('SALON_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getServiceById(@PathVariable UUID id) {
         try {
@@ -87,7 +87,7 @@ public class ServiceController {
         }
     }
 
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('SALON_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateService(@PathVariable UUID id, @Validated @RequestBody UpdateServiceDto dto) {
         try {
@@ -109,7 +109,7 @@ public class ServiceController {
         }
     }
 
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('SALON_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteService(@PathVariable UUID id) {
         try {

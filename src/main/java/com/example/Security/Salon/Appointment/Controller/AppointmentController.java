@@ -27,11 +27,10 @@ public class AppointmentController {
             Appointment appointment = appointmentService.addAppointment(createAppointmentDTO);
             AppointmentResponseDto responseDto = new AppointmentResponseDto(
                     appointment.getId(),
-                    appointment.getDateTime().toString(),
+                    appointment.getDateTime(),
                     appointment.getStatus(),
                     appointment.getUser(),
-                    appointment.getServices(),
-                    appointment.getRating()
+                    appointment.getAppointmentServices()
             );
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -45,11 +44,11 @@ public class AppointmentController {
             Appointment appointment = appointmentService.getAppointment(id);
             AppointmentResponseDto responseDto = new AppointmentResponseDto(
                     appointment.getId(),
-                    appointment.getDateTime().toString(),
+                    appointment.getDateTime(),
                     appointment.getStatus(),
                     appointment.getUser(),
-                    appointment.getServices(),
-                    appointment.getRating()
+                    appointment.getAppointmentServices()
+
             );
             return ResponseEntity.ok(responseDto);
         } catch (ResourceNotFoundException e) {
@@ -64,11 +63,11 @@ public class AppointmentController {
             List<Appointment> appointments = appointmentService.getAllAppointmentsForSalon(salonId);
             List<AppointmentResponseDto> responseDtos = appointments.stream().map(appointment -> new AppointmentResponseDto(
                     appointment.getId(),
-                    appointment.getDateTime().toString(),
+                    appointment.getDateTime(),
                     appointment.getStatus(),
                     appointment.getUser(),
-                    appointment.getServices(),
-                    appointment.getRating()
+                    appointment.getAppointmentServices()
+
             )).toList();
             return ResponseEntity.ok(responseDtos);
         } catch (Exception e) {
