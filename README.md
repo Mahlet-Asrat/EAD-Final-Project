@@ -15,6 +15,9 @@ Welcome to the Beauty Salon Management System! Here’s what you can expect from
 This system is designed to enhance the beauty booking experience for both customers and salon owners, making it easier than ever to connect and enjoy your favorite services. Dive in and start managing your beauty appointments today!
 
 **Group Members**
-**1. Mahlet Asrat Tefera ----------------- **UGR/2181/14**
-2. Meklit Asrat Tefera ----------------- UGR/5387/14
-3. Niyat Debesay Kibreab --------------- UGR/6203/14**
+
+**1. Mahlet Asrat Tefera ----------------- UGR/2181/14**
+
+**2. Meklit Asrat Tefera ----------------- UGR/5387/14**
+
+**3. Niyat Debesay Kibreab --------------- UGR/6203/14****
