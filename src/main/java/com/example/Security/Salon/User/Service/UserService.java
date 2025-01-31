@@ -24,20 +24,21 @@ import java.util.UUID;
 
 @Service
 public class UserService  implements IUserService {
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final JWTService jwtService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private JWTService jwtService;
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder , AuthenticationManager authenticationManager, JWTService jwtService) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
     @Override
     @Transactional
     public User createUser(AddUserDto addUserDto, Role role) throws AlreadyExistsException{
@@ -68,7 +69,7 @@ public class UserService  implements IUserService {
                 });
     }
 
-public String login(LoginDto loginDto) throws Exception {
+public String login(LoginDto loginDto)  {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         if (authentication.isAuthenticated()){
             UserPrincipal users = (UserPrincipal) authentication.getPrincipal();
@@ -80,15 +81,6 @@ public String login(LoginDto loginDto) throws Exception {
 
 
 }
-
-//    private String convertUUIDToHex(UUID uuid) {
-//        // Convert UUID to a string without hyphens
-//        String uuidWithoutHyphens = uuid.toString().replace("-", "");
-//        // Return the hex string
-//        return uuidWithoutHyphens;
-//    }
-
-
 
     @Override
     public User editUser(EditUserDto editUserDto, UUID id) throws Exception {
