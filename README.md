@@ -20,4 +20,4 @@ This system is designed to enhance the beauty booking experience for both custom
 
 **2. Meklit Asrat Tefera ----------------- UGR/5387/14**
 
-**3. Niyat Debesay Kibreab --------------- UGR/6203/14****
+**3. Niyat Debesay Kibreab --------------- UGR/6203/14**
