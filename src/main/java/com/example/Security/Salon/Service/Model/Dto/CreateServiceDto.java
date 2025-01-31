@@ -20,7 +20,9 @@ public class CreateServiceDto {
     @Positive
     private BigDecimal price;
 
-
+    @NotNull
+    @Positive
+    private int no_of_employees;
 
     @NotNull
     @Pattern(regexp = "^(\\d{1,2})(hr|hrs|min|minutes)?(\\s?\\d{1,2}(min|minutes)?)?$",

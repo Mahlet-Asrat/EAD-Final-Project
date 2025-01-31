@@ -1,7 +1,5 @@
 package com.example.Security.Salon.Appointment.Model;
 
-import com.example.Security.Salon.Appointment.Model.Appointment;
-import com.example.Security.Salon.Employee.Model.Employee;
 import com.example.Security.Salon.Service.Model.Service;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AppointmentServiceEmployee {
+public class AppointmentService {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,17 +29,16 @@ public class AppointmentServiceEmployee {
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    @Column(nullable = false)
+    private Date startTime;
 
     @Column(nullable = false)
-    private int durationInMinutes;
+    private Date endTime;
 
-    public AppointmentServiceEmployee(Appointment appointment, Service service, Employee employee, int durationInMinutes) {
-        this.appointment = appointment;
+    public AppointmentService( Service service, Date startTime, Date endTime) {
+
         this.service = service;
-        this.employee = employee;
-        this.durationInMinutes = durationInMinutes;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 }

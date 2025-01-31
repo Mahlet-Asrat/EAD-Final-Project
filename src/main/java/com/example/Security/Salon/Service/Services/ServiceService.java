@@ -1,7 +1,5 @@
 package com.example.Security.Salon.Service.Services;
 
-//import com.example.Security.Salon.Appointment.Model.Appointment;
-//import com.example.Security.Salon.Appointment.Service.AppointmentService;
 import com.example.Security.Salon.Exception.ResourceNotFoundException;
 import com.example.Security.Salon.Salon.Service.Repositories.SalonService;
 import com.example.Security.Salon.Service.Model.Dto.CreateServiceDto;
@@ -9,8 +7,6 @@ import com.example.Security.Salon.Service.Model.Dto.UpdateServiceDto;
 import com.example.Security.Salon.Service.Model.Service;
 import com.example.Security.Salon.Service.Services.Repositories.ServiceRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,19 +14,21 @@ import java.util.UUID;
 @org.springframework.stereotype.Service
 public class ServiceService implements IServiceService {
 
-    @Autowired
-    private ServiceRepositories serviceRepository;
+
+    private final ServiceRepositories serviceRepository;
+    private final SalonService salonService;
 
     @Autowired
-    private SalonService salonService;
+    public ServiceService(ServiceRepositories serviceRepository, SalonService salonService) {
+        this.serviceRepository = serviceRepository;
+        this.salonService = salonService;
+    }
 
-//    @Autowired
-//    private AppointmentService appointmentService;
 
 
-    public Service addService(CreateServiceDto createServiceDto) throws ResourceNotFoundException {
+    public Service addService(CreateServiceDto createServiceDto) throws ResourceNotFoundException, IllegalAccessException {
 
-        var salon = salonService.getSalonById(createServiceDto.getSalonId())
+        var salon = Optional.of(salonService.getSalonById(createServiceDto.getSalonId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Salon not found"));
 
 
@@ -44,7 +42,8 @@ public class ServiceService implements IServiceService {
                 createServiceDto.getDescription(),
                 createServiceDto.getPrice(),
                 createServiceDto.getDuration(),
-                salon
+                salon,
+                createServiceDto.getNo_of_employees()
         );
 
         return serviceRepository.save(newService);
@@ -59,6 +58,7 @@ public class ServiceService implements IServiceService {
         existingService.setDescription(updateServiceDto.getDescription());
         existingService.setPrice(updateServiceDto.getPrice());
         existingService.setDuration(updateServiceDto.getDuration());
+        existingService.setNo_of_employees(updateServiceDto.getNo_of_employees());
 
         return serviceRepository.save(existingService);
     }

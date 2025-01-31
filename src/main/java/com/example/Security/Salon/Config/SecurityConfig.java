@@ -42,9 +42,9 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
 
        .authorizeHttpRequests(request ->
-               request.requestMatchers("/api/v1/users/login", "/api/v1/users/signup", "/api/v1/owner/signup","/api/v1/owner/login", "/api-docs").permitAll()
-                       .requestMatchers("/api/v1/salons/**").hasRole("OWNER")
-                       .requestMatchers("/api/v1/employees/**").hasRole("OWNER")// OWNER-specific endpoints
+               request.requestMatchers("/api/v1/users/login", "/api/v1/users/signup", "/api/v1/Salon_Admin/signup","/api/v1/Salon_Admin/login", "/api/v1/General_Admin/signup","/api/v1/General_Admin/login", "/api-docs").permitAll()
+                       .requestMatchers("/api/v1/salons/**").hasRole("SALON_ADMIN")
+                       .requestMatchers("/api/v1/employees/**").hasRole("SALON_ADMIN")
                        .requestMatchers("/api/user/**").hasRole("USER")
                .anyRequest().authenticated())
 

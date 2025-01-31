@@ -17,7 +17,6 @@ public interface IAppointmentService {
     Appointment getAppointment(UUID id) throws ResourceNotFoundException;
     Appointment updateAppointment(UUID id, CreateAppointmentDTO createAppointmentDto);
     void deleteAppointment(UUID id) throws ResourceNotFoundException;
-    List<Appointment> getAllAppointmentsForEmployee(UUID employeeId) throws Exception;
     List<Appointment> getAllAppointmentsForSalon(UUID salonId) throws Exception;
     String addRatingToAppointment(UUID appointmentID, int rating) throws Exception;
 }

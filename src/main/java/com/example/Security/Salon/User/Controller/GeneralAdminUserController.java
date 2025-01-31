@@ -11,15 +11,15 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("${api.baseUrl}/Salon_Admin")
-public class OwnerController {
-
+@RequestMapping("${api.baseUrl}/General_Admin")
+public class GeneralAdminUserController {
     @Autowired
     private UserService userService;
 
@@ -29,7 +29,7 @@ public class OwnerController {
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid AddUserDto addUserDto) {
         try {
-            Role role = roleService.findRoleByName("SALON_ADMIN");
+            Role role = roleService.findRoleByName("GENERAL_ADMIN");
             User user = userService.createUser(addUserDto, role);
             UserResponseDto response = new UserResponseDto(user.getId(), user.getFirstName(), user.getLastName(),
                     user.getUsername(), user.getPhoneNumber(), user.getEmail());
@@ -43,5 +43,4 @@ public class OwnerController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

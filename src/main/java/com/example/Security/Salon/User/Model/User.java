@@ -1,12 +1,15 @@
 package com.example.Security.Salon.User.Model;
 import com.example.Security.Salon.Appointment.Model.Appointment;
 import com.example.Security.Salon.Role.Model.Role;
+import com.example.Security.Salon.Salon.Model.Salon;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +44,17 @@ private List<Appointment> appointments;
 @JoinColumn(name="role_id" )
 private Role role;
 
+@CreationTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+private java.util.Date createdAt;
+
+@UpdateTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+private java.util.Date updatedAt;
+
+@ManyToOne(cascade = CascadeType.ALL)
+private Salon salon;
+
 public User(String firstName, String lastName, String username, String phoneNumber, String email, String password, Role role) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -51,6 +65,16 @@ public User(String firstName, String lastName, String username, String phoneNumb
     this.role = role;
 
 
+}
+
+@PrePersist
+protected void onCreate() {
+    this.createdAt = new java.util.Date();
+}
+
+@PreUpdate
+protected void onUpdate() {
+    this.updatedAt = new java.util.Date();
 }
 
 

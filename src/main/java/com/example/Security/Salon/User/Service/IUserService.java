@@ -1,5 +1,6 @@
 package com.example.Security.Salon.User.Service;
 import com.example.Security.Salon.Exception.AlreadyExistsException;
+import com.example.Security.Salon.Exception.ResourceNotFoundException;
 import com.example.Security.Salon.Role.Model.Role;
 import com.example.Security.Salon.User.Model.Dto.AddUserDto;
 import com.example.Security.Salon.User.Model.Dto.EditUserDto;
@@ -15,4 +16,5 @@ public interface IUserService  {
     User findUserByUsername(String username) throws Exception;
     String deleteUser(UUID id) throws Exception;
 
+    User findUserWithRole(UUID adminId,String role) throws ResourceNotFoundException;
 }

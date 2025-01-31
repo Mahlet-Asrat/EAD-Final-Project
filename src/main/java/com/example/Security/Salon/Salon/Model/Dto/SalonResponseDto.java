@@ -1,18 +1,21 @@
 package com.example.Security.Salon.Salon.Model.Dto;
 
-import jakarta.validation.constraints.*;
+import com.example.Security.Salon.Salon.Model.Authorized;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.validator.constraints.UUID;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CreateSalonDto {
+import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class SalonResponseDto {
     @NotBlank(message = "Name is mandatory")
     @Size(min = 3, max = 100, message = "Salon name must be between 3 and 100 characters")
     private String name;
@@ -34,9 +37,14 @@ public class CreateSalonDto {
     @Size(max = 255, message = "Image URL is too long")
     private String image;
 
-    @UUID
-    private java.util.UUID createdById;
+    @NotNull
+    private Authorized authorized;
 
+    @NotNull
+    @UUID
+    private java.util.UUID authorizedBy;
+
+    private Date authorizedAt;
 
 
 }

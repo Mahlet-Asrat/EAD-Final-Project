@@ -49,8 +49,8 @@ public class UserService extends IUserLogin implements IUserService {
                     String password = bCryptPasswordEncoder.encode(addUserDto.getPassword());
 
 
-                    System.out.println("Fetched Role ID: " + role.getId()); // Log the fetched role ID
-                    System.out.println("Inserting user with role_id: " + role.getId()); // Log the role_id
+                    System.out.println("Fetched Role ID: " + role.getId());
+                    System.out.println("Inserting user with role_id: " + role.getId());
                     User user = new User(
                             addUserDto.getFirstName(),
                             addUserDto.getLastName(),
@@ -81,12 +81,12 @@ public String login(LoginDto loginDto) throws Exception {
 
 }
 
-    private String convertUUIDToHex(UUID uuid) {
-        // Convert UUID to a string without hyphens
-        String uuidWithoutHyphens = uuid.toString().replace("-", "");
-        // Return the hex string
-        return uuidWithoutHyphens;
-    }
+//    private String convertUUIDToHex(UUID uuid) {
+//        // Convert UUID to a string without hyphens
+//        String uuidWithoutHyphens = uuid.toString().replace("-", "");
+//        // Return the hex string
+//        return uuidWithoutHyphens;
+//    }
 
 
 
@@ -129,6 +129,22 @@ public String login(LoginDto loginDto) throws Exception {
             userRepository.deleteById(id);
             return "User deleted";
         }).orElseThrow(()->new ResourceNotFoundException("User Not Found!"));
+
+    }
+
+    @Override
+    public  User findUserWithRole(UUID id, String role) throws ResourceNotFoundException {
+        Role roleData = roleRepository.findByName(role);
+        User user = userRepository.findByIdAndRole(id, roleData);
+        if (user == null){
+            throw new ResourceNotFoundException("User with the specified id not found");
+
+        }
+        else{
+            return user;
+        }
+
+
 
     }
 }

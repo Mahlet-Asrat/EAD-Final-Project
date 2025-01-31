@@ -4,8 +4,7 @@ import com.example.Security.Salon.Appointment.Model.Appointment;
 import com.example.Security.Salon.Appointment.Model.Dto.CreateAppointmentDTO;
 import com.example.Security.Salon.Appointment.Model.Status;
 import com.example.Security.Salon.Appointment.Service.Repository.AppointmentRespository;
-import com.example.Security.Salon.Employee.Model.Employee;
-import com.example.Security.Salon.Employee.Service.EmployeeService;
+import com.example.Security.Salon.GeneralAdmin.Service.GeneralAdminService;
 import com.example.Security.Salon.Exception.ResourceNotFoundException;
 import com.example.Security.Salon.Salon.Model.Salon;
 import com.example.Security.Salon.Salon.Service.Repositories.SalonService;
@@ -19,69 +18,76 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
 
 
 @Service
-public class AppointemntService implements IAppointmentService {
+public class AppointmentService implements IAppointmentService {
 
     @Autowired
     private AppointmentRespository appointmentRepository;
 
 
     @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
     private SalonService salonService;
+    private final UserService userService;
+    private final ServiceService serviceService;
+
 
     @Autowired
-    private UserService userService;
+    public AppointmentService (SalonService salonService, UserService userService, ServiceService serviceService) {
+        this.salonService = salonService;
+        this.userService = userService;
+        this.serviceService = serviceService;
+    }
 
-    @Autowired
-    private ServiceService serviceService;
 
 
     @Transactional
     @Override
+
     public Appointment addAppointment(CreateAppointmentDTO createAppointmentDTO) throws Exception {
 
-
-        Optional<Appointment> existingAppointment = appointmentRepository.findByEmployee_IdAndSalon_IdAndDateTime(
-                createAppointmentDTO.getEmployeeId(),
+        Optional<Appointment> existingAppointment = appointmentRepository.findBySalon_IdAndDateTime(
                 createAppointmentDTO.getSalonId(),
                 createAppointmentDTO.getDateTime()
         );
 
         if (existingAppointment.isPresent()) {
-            throw new Exception("An appointment already exists at this time for this employee and salon.");
+            throw new IllegalStateException("An appointment already exists at this time for this employee and salon.");
         }
 
-        // Fetch Employee, Salon, and User from their respective services
-        Employee employee = employeeService.getEmployee(createAppointmentDTO.getEmployeeId());
-        Salon salon = salonService.getSalonById(createAppointmentDTO.getSalonId())
-                .orElseThrow(() -> new Exception("Salon not found"));
 
+        Salon salon = salonService.getSalonById(createAppointmentDTO.getSalonId());
         User user = userService.findUserById(createAppointmentDTO.getUserId());
 
-
-        List<com.example.Security.Salon.Service.Model.Service> services = serviceService.getServiceByIds(createAppointmentDTO.getServiceIds());
-
+        List<com.example.Security.Salon.Appointment.Model.AppointmentService> appointmentServices = createAppointmentDTO.getServiceTimes().stream()
+                .map(serviceTime -> {
+                    com.example.Security.Salon.Service.Model.Service service = null;
+                    try {
+                        service = Optional.ofNullable(serviceService.findServiceById(serviceTime.getServiceId())).orElseThrow(()->new ResourceNotFoundException("Appointment not found"));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return new com.example.Security.Salon.Appointment.Model.AppointmentService(
+                            service,
+                            serviceTime.getStartTime(),
+                            serviceTime.getEndTime()
+                    );
+                })
+                .collect(Collectors.toList());
 
 
         Appointment appointment = new Appointment(
                 createAppointmentDTO.getDateTime(),
-                Status.valueOf(createAppointmentDTO.getStatus()),  // Assuming Status is an enum
-                services,
-                employee,
+                Status.valueOf(createAppointmentDTO.getStatus()),
+                appointmentServices,
                 salon,
                 user
         );
-
-
+        appointmentServices.forEach(service -> service.setAppointment(appointment));
         return appointmentRepository.save(appointment);
     }
-
     @Override
     public Appointment getAppointment(UUID id) throws ResourceNotFoundException {
         return appointmentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Appointment Not Found"));
@@ -101,15 +107,7 @@ public class AppointemntService implements IAppointmentService {
 
     }
 
-    @Override
-    public List<Appointment> getAllAppointmentsForEmployee(UUID employeeId) throws Exception {
-        List<Appointment> appointment =  this.appointmentRepository.findByEmployee_Id(employeeId);
-        if (appointment.isEmpty()){
-            throw  new ResourceNotFoundException("Wrong Employee Id");
-        }
-        return appointment;
 
-    }
 
     @Override
     public List<Appointment> getAllAppointmentsForSalon(UUID salonId) throws Exception {
@@ -129,14 +127,15 @@ public class AppointemntService implements IAppointmentService {
 
         }
 
-        List<Appointment> appoint = appointmentRepository.findByEmployee_IdAndStatus(appointment.getEmployee().getId(), Status.COMPLETED);
+        List<Appointment> appoint = appointmentRepository.findBySalon_IdAndStatus(appointment.getSalon().getId(), Status.COMPLETED);
         int sum = 0;
-        appoint.stream().mapToInt(
-                appontment->
-                        (int)appointment.getRating())
+        sum =  appoint.stream().mapToInt(
+                individualAppointment->
+                        (int)individualAppointment.getRating())
                          .sum();
+
         float employeesRating = (!appoint.isEmpty())? (float) sum /appoint.size(): 0;
-        appointment.getEmployee().setRating(employeesRating);
+        appointment.getSalon().setRating(employeesRating);
 
         return "";
 

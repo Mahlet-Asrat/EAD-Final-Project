@@ -10,8 +10,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AppointmentRespository extends JpaRepository<Appointment, UUID> {
-    List<Appointment> findByEmployee_Id(UUID employeeId) throws Exception;
+
     List<Appointment> findBySalon_Id(UUID salonId) throws Exception;
-    List<Appointment> findByEmployee_IdAndStatus(UUID salonId, Status status) throws Exception;
-    Optional<Appointment> findByEmployee_IdAndSalon_IdAndDateTime(UUID employeeId, UUID salonId, Date dateTime);
+    List<Appointment> findBySalon_IdAndStatus(UUID salonId, Status status) throws Exception;
+    Optional<Appointment> findBySalon_IdAndDateTime( UUID salonId, Date dateTime);
 }

@@ -1,41 +1,27 @@
 package com.example.Security.Salon.Appointment.Model.Dto;
 
-import com.example.Security.Salon.Service.Model.Service;
-import com.example.Security.Salon.User.Model.User;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 public class CreateAppointmentDTO {
 
-    @NotNull(message = "Date and time cannot be null")
-    @Future(message = "The appointment date must be in the future")
-    private Date dateTime;
-
-
-    @NotNull(message = "Status cannot be null")
-    private String status;
-
-    @NotNull(message = "Services cannot be null")
-    private List<UUID> serviceIds;
-
-    @NotNull(message = "Employee ID cannot be null")
-    private UUID employeeId;
-
-    @NotNull(message = "Salon ID cannot be null")
     private UUID salonId;
-
-    @NotNull(message = "User ID cannot be null")
     private UUID userId;
+    private Date dateTime;
+    private String status;
+    private List<ServiceTimeDTO> serviceTimes;  // List of services and their scheduled times
 
-
+    @Getter
+    @Setter
+    public static class ServiceTimeDTO {
+        private UUID serviceId;
+        private Date startTime;
+        private Date endTime;
+    }
 }

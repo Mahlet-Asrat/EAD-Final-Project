@@ -1,6 +1,5 @@
-package com.example.Security.Salon.Employee.Model.Dto;
+package com.example.Security.Salon.GeneralAdmin.Model.Dto;
 
-import com.example.Security.Salon.Employee.Model.Speciality;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

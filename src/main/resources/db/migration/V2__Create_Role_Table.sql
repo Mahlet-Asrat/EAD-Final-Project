@@ -11,5 +11,6 @@ CREATE TABLE `role` (
 
 INSERT INTO ROLE (name, description) VALUES
                                          ('USER', 'A basic user with limited access'),
-                                         ('EMPLOYEE', 'Employee with extended permission'),
-                                         ('OWNER', 'System owner with full access');
+                                         ('SALON_ADMIN', 'Admin with extended permission'),
+                                         ('GENERAL_ADMIN', 'System owner with full access');
+
