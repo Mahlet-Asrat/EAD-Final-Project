@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -47,11 +48,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) throws Exception {
-        String response = userService.login(loginDto);
-                return ResponseEntity.ok(response);
-
-
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDto loginDto) {
+        try {
+            Map<String, String> response = userService.loginUser(loginDto);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 
     // Edit User

@@ -16,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,18 +72,25 @@ public class UserService  implements IUserService {
                 });
     }
 
-public String login(LoginDto loginDto)  {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-        if (authentication.isAuthenticated()){
-            UserPrincipal users = (UserPrincipal) authentication.getPrincipal();
-            UUID userId = users.getId();
-            String role = users.getRoleId();
-            return jwtService.generateToken(userId, role);
+
+
+    public Map<String, String> loginUser(LoginDto loginDto) throws Exception {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
+        );
+
+        if (authentication.isAuthenticated()) {
+            User user = Optional.of(userRepository.findByEmail(loginDto.getEmail()))
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            String token = jwtService.generateToken(user.getId(), user.getRole().getName());
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("role", user.getRole().getName());
+            return response;
+        }
+        throw new Exception("Invalid username or password");
     }
-        return "boo";
 
-
-}
 
     @Override
     public User editUser(EditUserDto editUserDto, UUID id) throws Exception {
